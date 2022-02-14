@@ -1,0 +1,22 @@
+#!/usr/bin/env swift
+
+import Foundation
+
+class Deduplicator: NSObject, NSKeyedArchiverDelegate {
+    var objects: Set<NSObject> = []
+
+    func archiver(_ archiver: NSKeyedArchiver, willEncode object: Any) -> Any? {
+        guard let nsObject = object as? NSObject else {
+            return object
+        }
+        return objects.insert(nsObject).memberAfterInsert
+    }
+}
+
+let jsonData = try FileHandle.standardInput.readToEnd()!
+let json = try JSONSerialization.jsonObject(with: jsonData)
+let archiver = NSKeyedArchiver(requiringSecureCoding: false)
+let delegate = Deduplicator()
+archiver.delegate = delegate
+archiver.encode(json, forKey: NSKeyedArchiveRootObjectKey)
+try FileHandle.standardOutput.write(contentsOf: archiver.encodedData)
