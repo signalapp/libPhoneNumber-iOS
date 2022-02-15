@@ -69,7 +69,9 @@ let googleClosure = URL(
 loadJS(from: googleClosure, to: context)
 
 // Load metadata file from GitHub.
-let ref = "master"
+let ref = ProcessInfo.processInfo.environment["LIBPHONENUMBER_REF"] ?? "master"
+print("Fetching from libphonenumber \(ref) (set LIBPHONENUMBER_REF to override)...")
+
 let phoneMetadata = URL(string: "https://raw.githubusercontent.com/google/libphonenumber/\(ref)/javascript/i18n/phonenumbers/metadata.js")!
 let phoneMetadataForTesting = URL(string: "https://raw.githubusercontent.com/google/libphonenumber/\(ref)/javascript/i18n/phonenumbers/metadatafortesting.js")!
 let shortNumberMetadata = URL(string: "https://raw.githubusercontent.com/google/libphonenumber/\(ref)/javascript/i18n/phonenumbers/shortnumbermetadata.js")!
