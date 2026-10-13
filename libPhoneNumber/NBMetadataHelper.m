@@ -59,7 +59,12 @@ static NSString *StringByTrimming(NSString *aString) {
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     @autoreleasepool {
-      NSString *path = [[NSBundle bundleForClass:NBMetadataHelper.class] pathForResource:@"NBPhoneNumberMetaData" ofType:@"plist"];
+#if SWIFT_PACKAGE
+      NSBundle *bundle = SWIFTPM_MODULE_BUNDLE;
+#else
+      NSBundle *bundle = [NSBundle bundleForClass:NBMetadataHelper.class];
+#endif
+      NSString *path = [bundle pathForResource:@"NBPhoneNumberMetaData" ofType:@"plist"];
       NSData *fileContent = [NSData dataWithContentsOfFile:path];
       if (fileContent != nil) {
         NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:fileContent error:NULL];
